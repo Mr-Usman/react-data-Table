@@ -1,6 +1,8 @@
 import React from "react";
 
 function Filteration({
+  selectedType,
+  selectedStatus,
   handleSearch,
   searchName,
   handleTypeChange,
@@ -45,17 +47,21 @@ function Filteration({
             onChange={(e) => handleTypeChange(e)}
             className="px-4 py-3 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
           >
-            <option value="type">Type</option>
+            <option value="type" selected={!selectedType ? true : false}>
+              Type
+            </option>
             <option value="health">HEALTH</option>
             <option value="liability">LIABILITY</option>
             <option value="household">HOUSEHOLD</option>
           </select>
 
           <select
-            // onChange={(e) => handleStatusChange(e)}
+            onChange={(e) => handleStatusChange(e)}
             className="px-4 py-3 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
           >
-            <option value="status">Status</option>
+            <option value="status" selected={!selectedStatus ? true : false}>
+              Status
+            </option>
             <option value="active">Active</option>
             <option value="pending">Pending</option>
           </select>

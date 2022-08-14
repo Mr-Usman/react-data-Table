@@ -7,6 +7,8 @@ function App() {
   const [policyList, setPolicyList] = React.useState([]);
   const [filteredPolicyList, setFilteredPolicyList] = React.useState([]);
   const [searchName, setSearchName] = React.useState("");
+  const [selectedType, setSelectedType] = React.useState("");
+  const [selectedStatus, setSelectedStatus] = React.useState("");
 
   const getServerData = () => {
     fetch("https://feather-backend.herokuapp.com/policies")
@@ -41,53 +43,59 @@ function App() {
   };
 
   const handleTypeChange = (e) => {
-    console.log(
-      "🚀 ~ file: App.js ~ line 44 ~ handleTypeChange ~ e",
-      e.target.value
-    );
     const { value } = e.target;
-    if (value === "type") {
-      setFilteredPolicyList(policyList);
-    } else {
-      const filteredPolicyByType = policyList?.filter(
-        ({ insuranceType }, index) => insuranceType.toLowerCase() === value
-      );
-      // setPolicyList(filteredPolicyByType);
-      setFilteredPolicyList(filteredPolicyByType);
-    }
+    setSelectedType(value);
   };
 
-  // const handleStatusChange = (e) => {
-  //   const { value } = e.target;
-  //   if (value === "status") {
-  //     setFilteredPolicyList(policyList);
-  //   } else {
-  //     const filteredPolicyByType = filteredPolicyList?.filter(
-  //       ({ status }, index) => status.toLowerCase() === value
-  //     );
-  //     // setPolicyList(filteredPolicyByType);
-  //     setFilteredPolicyList(filteredPolicyByType);
-  //   }
-  // };
+  const handleStatusChange = (e) => {
+    const { value } = e.target;
+    setSelectedStatus(value);
+  };
 
   const onResetPolices = () => {
     setFilteredPolicyList(policyList);
+    setSearchName("");
+    setSelectedType("");
+    setSelectedStatus("");
+  };
+
+  const filterListByType = () => {
+    if (selectedType === "type" || selectedType === "") {
+      return policyList;
+    }
+    const filteredPolicyByType = policyList?.filter((plt) => {
+      return plt.insuranceType.toLowerCase() === selectedType;
+    });
+    return filteredPolicyByType;
+  };
+
+  const filterListByStatus = (filterDataByType) => {
+    if (selectedStatus === "status" || selectedStatus === "") {
+      return filterDataByType;
+    }
+    const filteredPolicyByStatus = filterDataByType?.filter((plt) => {
+      return plt.status.toLowerCase() === selectedStatus;
+    });
+    return filteredPolicyByStatus;
   };
 
   React.useEffect(() => {
     getServerData();
   }, []);
 
-  console.log(
-    "🚀 ~ file: App.js ~ line 46 ~ searchResults ~ policyList",
-    policyList
-  );
+  React.useEffect(() => {
+    const filterDataByType = filterListByType();
+    const filterlstBySta = filterListByStatus(filterDataByType);
+    setFilteredPolicyList(filterlstBySta);
+  }, [selectedType, selectedStatus]);
 
   return (
     <div className="w-full p-8">
       <Filteration
+        selectedType={selectedType}
+        selectedStatus={selectedStatus}
         handleTypeChange={handleTypeChange}
-        // handleStatusChange={handleStatusChange}
+        handleStatusChange={handleStatusChange}
         handleSearch={handleSearch}
         searchName={searchName}
         onResetPolices={onResetPolices}
